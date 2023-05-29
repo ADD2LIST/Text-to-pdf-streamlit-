@@ -10,7 +10,11 @@ def create_pdf(text):
 
     pdf.set_font("Arial", size=12)
 
-    pdf.cell(0, 10, txt=text)
+    lines = text.split("\n")  # Split text into lines
+
+    for line in lines:
+
+        pdf.cell(0, 10, txt=line, ln=True)  # Add each line to the PDF
 
     return pdf
 
@@ -34,7 +38,9 @@ def main():
 
             pdf = create_pdf(text_input)
 
-            pdf_file = st.download_button("Download PDF", pdf.output(dest="S").encode("latin-1"), file_name="converted_pdf.pdf")
+            pdf_file = pdf.output(dest="S").encode("latin-1")
+
+            st.download_button("Download PDF", pdf_file, file_name="converted_pdf.pdf")
 
             st.success("PDF created successfully!")
 
@@ -45,5 +51,10 @@ def main():
 if __name__ == "__main__":
 
     main()
+
+
+
+    
+    
 
 
