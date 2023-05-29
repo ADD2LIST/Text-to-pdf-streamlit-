@@ -2,41 +2,48 @@ import streamlit as st
 
 from fpdf import FPDF
 
-import base64
+def create_pdf(text):
 
-def create_download_link(val, filename):
+    pdf = FPDF()
 
-  b64 = base64.b64encode(val)
+    pdf.add_page()
 
-  # val looks like b'...'
+    pdf.set_font("Arial", size=12)
 
-  return f'<a href="data:application/octet-stream;base64,{b64.decode()}" download="{filename}.pdf">Download file</a>'
+    pdf.cell(0, 10, txt=text)
 
-# Create a text input field
+    return pdf
 
-report_text = st.text_input("Report Text")
+def main():
 
-# Create a button to export the report as a PDF
+    st.title("Text to PDF Converter")
 
-export_as_pdf = st.button("Export Report")
+    # Input text
 
-# If the user clicks the button, export the report as a PDF
+    st.subheader("Enter your text:")
 
-if export_as_pdf:
+    text_input = st.text_area("Text")
 
-  pdf = FPDF()
+    # Convert to PDF button
 
-  pdf.add_page()
+    if st.button("Convert to PDF"):
 
-  pdf.set_font('Arial', 'B', 16)
+        if text_input:
 
-  pdf.cell(40, 10, report_text)
+            # Create PDF object and save file
 
-  # Convert the PDF to a base64 string
+            pdf = create_pdf(text_input)
 
-  pdf_bytes = pdf.output(dest="S").encode("latin-1")
+            pdf_file = st.download_button("Download PDF", pdf.output(dest="S").encode("latin-1"), file_name="converted_pdf.pdf")
 
-  # Create a download link for the PDF
+            st.success("PDF created successfully!")
 
-  st.markdown(create_download_link(pdf_bytes, "report.pdf"), unsafe_allow_html=True)
+        else:
+
+            st.warning("Please enter some text.")
+
+if __name__ == "__main__":
+
+    main()
+
 
